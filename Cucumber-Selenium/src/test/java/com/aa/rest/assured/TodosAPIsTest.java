@@ -7,13 +7,53 @@ import org.junit.Test;
 
 import com.aa.pojos.Todos;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-public class TodosAPIsTesting {
+public class TodosAPIsTest {
+
+	@Test
+	public void getTodosListAPITest_verifyTodoObject() throws Exception {
+
+		// get api response
+
+		Response response = RestAssured.get("https://jsonplaceholder.typicode.com/todos");
+
+		String jsonResponse = response.asString();
+
+		// convert json response string to java object
+		ObjectMapper mapper = new ObjectMapper();
+		List<Todos> todosList = mapper.readValue(jsonResponse, new TypeReference<List<Todos>>() {
+		});
+
+		// add the assertions to validate response
+		Assert.assertEquals(200, todosList.size());
+
+		// verify todo object with id=3 userId=1 present in the list
+		
+		
+		System.out.println("*************************");
+
+		boolean found = false;
+
+		for (Todos empTodo : todosList) {
+			if (3000 == empTodo.getId() && 1 == empTodo.getUserId()) {
+
+				found = true;
+				// break;
+			}
+		}
+
+		Assert.assertTrue(found);
+
+		// assert check(values);
+
+		System.out.println(todosList.size());
+	}
 
 	@Test
 	public void getTodosListAPITest() {
